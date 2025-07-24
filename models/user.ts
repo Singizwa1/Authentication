@@ -6,6 +6,9 @@ interface UserAttribute{
   email:string,
   password:string,
   role:string,
+  googleId?:string,
+  photo?:string,
+  lastLogin?:Date,
   gender:'male'|'female'|'other',
   CreatedAt?:Date,
   UpdatedAt?:Date,
@@ -23,6 +26,9 @@ export class User extends Model<UserAttribute, UserCreationAttribute> implements
     public role!: string;
     public gender!: "male" | "female" | "other";
     public updateAt!: Date;
+    public googleId!: string;
+    public photo!: string ;
+    public lastLogin!: Date 
     public deletedAt!: Date|null;
     public createdAt: Date = new Date;
     public name!: string;
@@ -38,6 +44,9 @@ export class User extends Model<UserAttribute, UserCreationAttribute> implements
             password: this.password,
             gender: this.gender,
             role: this.role,
+            googleId: this.googleId,
+            photo: this.photo,
+            lastLogin: this.lastLogin,
             updateAt: this.updateAt,
             createdAt: this.createdAt
         }
@@ -70,6 +79,19 @@ export class User extends Model<UserAttribute, UserCreationAttribute> implements
         gender:{
           type:DataTypes.ENUM('male','female','other')
         },
+         googleId: {                 
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true
+    },
+    photo: {                   
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    lastLogin: {                
+      type: DataTypes.DATE,
+      allowNull: true
+    },
          deletedAt: {
         type: DataTypes.DATE,
       },
