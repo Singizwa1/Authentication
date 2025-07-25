@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ResponseService } from '../utils/response';
-import { tokenBlacklist } from '../utils/tokenBlacklist';
+import { tokenBlacklist } from "../utils/tokenBlacklist";
+import { IUserController } from '../types/userInterface';
 
 export class UserController implements IUserController {
   
@@ -10,7 +11,7 @@ export class UserController implements IUserController {
   }
 
   public async googleAuthCallback(req: Request, res: Response): Promise<void> {
-    // This is handled by Passport, but you can customize the redirect
+    
     res.redirect('/dashboard');
   }
 
@@ -37,13 +38,13 @@ export class UserController implements IUserController {
 
   public async logout(req: Request, res: Response){
     try {
-      // Add current session ID to blacklist
+      
       if (req.sessionID) {
-        // Blacklist for 4 hours (match your session expiration)
+        
         tokenBlacklist.addToken(req.sessionID, 4 * 60 * 60 * 1000);
       }
 
-      // Logout with Passport
+      
       req.logout((err) => {
         if (err) {
           console.error('Logout error:', err);
@@ -55,7 +56,7 @@ export class UserController implements IUserController {
           });
         }
         
-        // Destroy session completely
+        
         req.session?.destroy((destroyErr) => {
           if (destroyErr) {
             console.error('Session destroy error:', destroyErr);
@@ -67,9 +68,8 @@ export class UserController implements IUserController {
             });
           }
           
-          // Clear the session cookie
-          res.clearCookie('connect.sid'); // Adjust if you use different session name
-          
+        
+    
           return ResponseService({
             status: 200,
             success: true,
