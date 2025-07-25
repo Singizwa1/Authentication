@@ -2,7 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import { ResponseService } from '../utils/response';
 import { tokenBlacklist } from "../utils/tokenBlacklist";
 import { IUserController } from '../types/userInterface';
+import { generateToken } from '../utils/helper';
+import { Database } from '../database/db';
 
+Database;
 export class UserController implements IUserController {
   
   public async googleAuth(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -24,17 +27,54 @@ export class UserController implements IUserController {
     });
   }
 
-  public async authSuccess(req: Request, res: Response) {
+  public async authSuccess(req: Request, res: Response){
+  try {
+    if (!req.user) {
+      return ResponseService({
+        status: 401,
+        success: false,
+        message: "Authentication failed - No user data",
+        res
+      });
+    }
+
+    const user: any = req.user;
+
+    const token = generateToken({
+      id: user.id,
+      email: user.email
+    });
+
     return ResponseService({
       status: 200,
       success: true,
       message: "Google Authentication Successful",
       data: {
-        user: req.user
+        token: token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          googleId: user.googleId || '',
+          photo: user.photo || '',
+          role: user.role
+        }
       },
       res
     });
+
+  } catch (error) {
+    console.error('Auth success error:', error);
+    
+    return ResponseService({
+      status: 500,
+      success: false,
+      message: "Failed to generate authentication token",
+    
+      res
+    });
   }
+}
 
   public async logout(req: Request, res: Response){
     try {

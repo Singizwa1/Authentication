@@ -22,13 +22,7 @@ Authrouter.get('/google/callback',
 Authrouter.get('/failure', controller.authFailure);
 
 
-Authrouter.get('/success', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Authentication successful',
-    user: req.user
-  });
-});
+Authrouter.get('/success', controller.authSuccess);
 
 
 Authrouter.get('/logout', controller.logout);
