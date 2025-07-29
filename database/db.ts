@@ -41,7 +41,7 @@ sequelize.sync({ alter: true })
 Object.values(models).forEach(model => {
   if (model?.association) {
     model.association(models);
-  }
+   }
 });
 
 export const Database = {
