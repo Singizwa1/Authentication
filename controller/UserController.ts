@@ -52,12 +52,11 @@ export class UserController implements IUserController {
       data: {
         token: token,
         user: {
-          id: user.id,
+  
           name: user.name,
           email: user.email,
-          googleId: user.googleId || '',
-          photo: user.photo || '',
-          role: user.role
+      
+        
         }
       },
       res
