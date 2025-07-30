@@ -8,7 +8,7 @@ interface ConfigInterface {
   password: string;
   database: string;
   port: number;
-  host: string;
+  host: string; 
 }
 
 const db_config = databaseConfig() as ConfigInterface;

@@ -1,7 +1,7 @@
 const dotenv = require('dotenv')
 dotenv.config()
-const getPrefix = () => {
-  var env = process.env.NODE_ENV;
+const getPrefix = () =>  {
+  var env = process.env.ENV;
   if (!env) {
     return env = 'DEV'
   }
