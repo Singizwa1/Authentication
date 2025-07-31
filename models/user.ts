@@ -36,21 +36,10 @@ export class User extends Model<UserAttribute, UserCreationAttribute> implements
     public association(modal: any) {
         
     }
-    public toJSON(): object | UserAttribute {
-        return {
-            id: this.id,
-            name: this.name,
-            email: this.email,
-            password: this.password,
-            gender: this.gender,
-            role: this.role,
-            googleId: this.googleId,
-            photo: this.photo,
-            lastLogin: this.lastLogin,
-            updateAt: this.updateAt,
-            createdAt: this.createdAt
-        }
-      }
+    public toJSON(): Omit<UserAttribute, "password"> {
+    const { password, ...values } = this.get();
+    return values;
+  }
     }
 
     export const  UserModal=(sequelize:Sequelize)=>{
