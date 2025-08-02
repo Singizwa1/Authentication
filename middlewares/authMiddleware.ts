@@ -1,45 +1,97 @@
 import { Request, Response, NextFunction } from "express";
 import { ResponseService } from "../utils/response";
-import jwt, { JwtPayload } from "jsonwebtoken";
 import { secretKey } from "../utils/helper";
+import { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken"
 
-type UserPayload = {
-  id: string;
-  email: string;
-};
-
-interface JwtPayloadExtra extends JwtPayload {
-  id: string;
-  email: string;
+interface jwtExtendPayload extends JwtPayload {
+    id: string;
+    email: string;
+    role: string;  
 }
 
-export interface AuthRequest extends Request {
-  user?: UserPayload;
-}
-
-export const AuthMiddleware= (req: AuthRequest, res: Response, next: NextFunction) => {
-  try {
-    const { authorization } = req.headers;
-
-    if (!authorization) {
-      return ResponseService({
-        res,
-        message: "Unauthorized Access",
-        status: 401,
-      });
+// Define custom User type that extends both Passport User and our payload
+declare global {
+    namespace Express {
+        // This will merge with the existing User interface from Passport
+        interface User extends jwtExtendPayload {}
     }
+}
 
-    const token = authorization.split(" ")[1];
-    const decoded = jwt.verify(token, secretKey) as JwtPayloadExtra;
+export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+            return ResponseService({
+                data: null,
+                status: 401,
+                success: false,
+                message: "Authentication token is missing",
+                res
+            });
+        }
 
-    req.user = { id: decoded.id, email: decoded.email };
-    return next();
+        const user = jwt.verify(token as string, secretKey) as jwtExtendPayload;
+        if (!user) {
+            return ResponseService({
+                data: null,
+                status: 401,
+                success: false,
+                message: "Invalid authentication token",
+                res
+            });
+        }
 
-  } catch (error) {
-    return ResponseService({
-      res,
-      message: "Please login again",
-      status: 401,
-    });
-  }
+        req.user = user;
+        next();
+        
+    } catch (error) {
+        //console.error('Authentication error:', error);
+        const { message, stack } = error as Error;
+        ResponseService({
+            data: { message, stack },
+            status: 500,
+            success: false,
+            res
+        });
+        
+    }
+}
+
+export const checkRole = (allowedRoles: string[]) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const user = req.user;
+
+            if (!user || !user.role) {
+                return ResponseService({
+                    data: null,
+                    status: 403,
+                    success: false,
+                    message: "User role not found in token",
+                    res
+                });
+            }
+
+            if (!allowedRoles.includes(user.role)) {
+                return ResponseService({
+                    data: null,
+                    status: 403,
+                    success: false,
+                    message: "You do not have permission to perform this action",
+                    res
+                });
+            }
+            
+            next();
+        } catch (error) {
+            const { message, stack } = error as Error;
+            ResponseService({
+                data: { message, stack },
+                status: 500,
+                success: false,
+                res
+            });
+        }
+    };
 };

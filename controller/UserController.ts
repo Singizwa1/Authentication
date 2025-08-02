@@ -42,7 +42,8 @@ export class UserController implements IUserController {
 
     const token = generateToken({
       id: user.id,
-      email: user.email
+      email: user.email,
+      role: user.role || 'user' 
     });
 
     return ResponseService({

@@ -33,8 +33,20 @@ export class User extends Model<UserAttribute, UserCreationAttribute> implements
     public createdAt: Date = new Date;
     public name!: string;
 
-    public association(modal: any) {
-        
+    public static associate(models: any) {
+        User.hasMany(models.Blog, {
+            foreignKey: 'author',
+            sourceKey: 'email',
+            as: 'blogs'
+        });
+        User.hasMany(models.Comment, {
+            foreignKey: 'userId',
+            as: 'comments'
+        });
+        User.hasMany(models.Like, {
+            foreignKey: 'userId',
+            as: 'likes'
+        });
     }
     public toJSON(): Omit<UserAttribute, "password"> {
     const { password, ...values } = this.get();

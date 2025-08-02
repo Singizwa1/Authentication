@@ -1,9 +1,8 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { ResponseService } from '../utils/response';
 import { generateToken, hashPassword, comparePassword } from '../utils/helper';
 import { CreateUserRequest, LoginUserRequest, UserControllerImplementation } from '../types/userInterface';
 import { Database } from '../database/db';
-import { AuthRequest } from '../middlewares/authMiddleware';
 
 export class AuthController implements UserControllerImplementation {
 
@@ -49,7 +48,7 @@ export class AuthController implements UserControllerImplementation {
   }
 
   
-  public async getAllUsers(req: AuthRequest, res: Response) {
+  public async getAllUsers(req: Request, res: Response) {
     try {
       const users = await Database.User.findAll({ raw: true });
 
@@ -95,7 +94,7 @@ export class AuthController implements UserControllerImplementation {
         });
       }
 
-      const token = generateToken({ id: user.id.toString(), email: user.email });
+      const token = generateToken({ id: user.id.toString(), email: user.email, role: user.role });
 
       return ResponseService({
         res,
@@ -116,3 +115,4 @@ export class AuthController implements UserControllerImplementation {
     }
   }
 }
+

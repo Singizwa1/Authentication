@@ -7,7 +7,8 @@ config()
 
 interface JwtPayload{
   id:string,
-  email:string
+  email:string,
+  role?:string
 }
 
 export const hashPassword = async (password: string): Promise<string> => {
@@ -19,7 +20,7 @@ export const comparePassword =async(password:string,hash:string):Promise<boolean
 }
  export const secretKey = process.env.JWT_SECRET || "SecretKey";
 
-export const generateToken = ({id,email}:{id:string;email:string}):string=>{
- const payload: JwtPayload = {id,email};
+export const generateToken = ({id,email,role}:{id:string;email:string;role:string}):string=>{
+ const payload: JwtPayload = {id,email, role};
    return jwt.sign(payload, secretKey, { expiresIn: '5h' });
 };
