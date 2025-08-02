@@ -4,14 +4,15 @@ import passport from "./config/passport";
 import { config } from "dotenv";
 import { Database } from "./database/db";
 import { router } from "./routes";
-
+import swaggerUi from 'swagger-ui-express'
+import { specs } from './config/swagger'
 config();
 
 
 Database; 
 
 const app = express();
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }))
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
