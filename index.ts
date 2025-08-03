@@ -6,6 +6,8 @@ import { Database } from "./database/db";
 import { router } from "./routes";
 import swaggerUi from 'swagger-ui-express'
 import { specs } from './config/swagger'
+import newsletterRouter from "./routes/newsletterRoutes"
+
 config();
 
 
@@ -33,8 +35,15 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+process.env.APP_URL = process.env.APP_URL || 'http://localhost:5000'
+ process.env.EMAIL_FROM = process.env.EMAIL_FROM || 'newsletter@myblog.com'
 
 app.use('/', router); 
+app.use('/api/newsletter', newsletterRouter)
+
+app.get('/blogs/:id', (req, res) => {
+    res.redirect(`/api/v1/blogs/${req.params.id}`);
+});
 
 const port = process.env.PORT || 5000;
 
