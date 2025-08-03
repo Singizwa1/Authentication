@@ -13,7 +13,7 @@ interface ConfigInterface {
 
 const db_config = databaseConfig() as ConfigInterface;
 
-const sequelize = new Sequelize({
+export const sequelize = new Sequelize({
   ...db_config,
   dialect: 'postgres',
   logging: process.env.NODE_ENV === 'development' ? console.log : false, 

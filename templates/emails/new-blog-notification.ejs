@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #f8f9fa;
+            color:blue;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+        .unsubscribe {
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>New Blog Post Published!</h1>
+    </div>
+    <div class="content">
+        <h2><%= title %></h2>
+        <p><%= description %></p>
+        <a href="<%= url %>" class="cta-button">Read More</a>
+    </div>
+    <div class="footer">
+        <p class="unsubscribe">
+            If you wish to unsubscribe, <a href="<%= unsubscribeUrl %>">click here</a>
+        </p>
+    </div>
+</body>
+</html>

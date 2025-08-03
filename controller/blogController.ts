@@ -1,8 +1,11 @@
 import { Request, Response } from 'express';
 import { ResponseService } from '../utils/response';
 import { Database } from '../database/db';
-import { Blog } from '../models/blogModal';
+import dotenv from 'dotenv';
 
+import { NewsletterController } from './newsletterController';
+
+dotenv.config();
 export class BlogController {
     
     public async createBlog(req: Request, res: Response) {
@@ -22,6 +25,19 @@ export class BlogController {
             blogData.author = req.user.email;
 
             const blog = await Database.Blog.create(blogData);
+
+            
+            try {
+                const newsletterController = new NewsletterController();
+                await newsletterController.notifyNewBlog({
+                    title: blog.title,
+                    description: blog.description || blog.content.substring(0, 200) + '...',
+                    url: `${process.env.APP_URL}/api/v1/blogs/${blog.id}`
+                });
+            } catch (emailError) {
+                console.error('Failed to send blog notifications:', emailError);
+                
+            }
 
             return ResponseService({
                 res,
@@ -86,7 +102,7 @@ export class BlogController {
         }
     }
 
-    // Get a single blog by ID (Public for published, Admin for all)
+    
     public async getBlogById(req: Request, res: Response) {
         try {
             const { id } = req.params;

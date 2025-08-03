@@ -1,4 +1,7 @@
-import { Sequelize,Model,DataTypes } from "sequelize";
+import { Model, DataTypes,Sequelize } from 'sequelize';
+
+ 
+
 
 interface BlogAttribute{
     id:string,
