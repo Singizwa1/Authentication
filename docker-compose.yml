@@ -1,10 +1,9 @@
-
 services:
   nodeapp:
     build: .
     container_name: blog-node-app
     ports:
-      - "5000:5000"
+      - "${PORT}:${PORT}"
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
@@ -19,11 +18,11 @@ services:
     container_name: blog-postgres
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Rwanda
-      POSTGRES_DB: blog_manager
+      POSTGRES_USER: ${DEV_USERNAME}
+      POSTGRES_PASSWORD: ${DEV_PASSWORD}
+      POSTGRES_DB: ${DEV_DATABASE}
     ports:
-      - "5432:5432"
+      - "${DEV_PORT}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -31,7 +30,7 @@ services:
     image: redis:7
     container_name: blog-redis
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
 
 volumes:
   pgdata:
